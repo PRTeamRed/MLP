@@ -5,7 +5,7 @@ Created on Wed Apr  4 16:20:17 2018
 @author: Shushan, Julia
 
 source0: http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mnist_filters.html#sphx-glr-auto-examples-neural-networks-plot-mnist-filters-py
-source1: http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mnist_filters.html#sphx-glr-auto-examples-neural-networks-plot-mnist-filters-py 
+source1: http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mnist_filters.html#sphx-glr-auto-examples-neural-networks-plot-mnist-filters-py
 
 
 """
@@ -57,13 +57,13 @@ def plot_learning_curve(estimator, title, X, y, ylim , cv, n_jobs):
 
     n_jobs : integer, optional
         Number of jobs to run in parallel (default 1).
-    
+
     train_sizes
-    
+
     train_scores
-    
+
     test_scores
-    
+
     """
     plt.figure()
     plt.title(title)
@@ -72,7 +72,7 @@ def plot_learning_curve(estimator, title, X, y, ylim , cv, n_jobs):
     plt.xlabel("Training examples")
     plt.ylabel("Score")
     train_sizes = np.linspace(.1, 1.0, 5)
-    
+
     train_sizes, train_scores, test_scores = learning_curve(
         estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
 
@@ -97,7 +97,7 @@ def plot_learning_curve(estimator, title, X, y, ylim , cv, n_jobs):
 
 
 #import the training data and separate the images and labels
-images_train, labels_train = read_data('train.csv') 
+images_train, labels_train = read_data('train.csv')
 #import the testing data and separate the images and labels
 images_test, labels_test = read_data('test.csv')
 
@@ -106,8 +106,8 @@ images_train = images_train / 255
 images_test = images_test /255
 
 
-for n in range(10, 110, 50): # It should be range(10, 110, 10). Just to speed up.
-    for c in range(1, 12, 3):
+for n in range(10, 110, 10): # It should be range(10, 110, 10). Just to speed up.
+    for c in range(1, 14, 3):
         for it_num in [10, 50, 100]:
             print('Fitting NN with {} neurons, {} learning rate, {} max iteration number'.format(n, c/10, it_num))
             mlp = MLPClassifier(hidden_layer_sizes=(n, ), max_iter=it_num, solver='sgd', tol=1e-4, random_state=1, learning_rate_init=(c/10))
@@ -117,7 +117,7 @@ for n in range(10, 110, 50): # It should be range(10, 110, 10). Just to speed up
             test_score = mlp.score(images_test, labels_test)
             print("Train set score (accuracy): %f" % train_score)
             print("Test set score (accuracy): %f" % test_score)
-            
+
 ### for plotting
 
 ylim=(0.7, 1.01)
@@ -129,6 +129,6 @@ title = "Learning Curves (Naive Bayes)"
 estimator = GaussianNB()
 plot_learning_curve(estimator, title, X, y, ylim, cv, n_jobs)
 plt.show()
-            
-            
+
+
 
