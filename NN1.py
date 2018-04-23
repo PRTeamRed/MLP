@@ -77,9 +77,9 @@ def plot_learning_curve(estimator, title, X, y, ylim , cv, n_jobs):
         estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes)
 
     train_scores_mean = np.mean(train_scores, axis=1)
-    train_scores_std = np.std(train_scores, axis=1)
-    test_scores_mean = np.mean(test_scores, axis=1)
-    test_scores_std = np.std(test_scores, axis=1)
+    train_scores_std  = np.std(train_scores,  axis=1)
+    test_scores_mean  = np.mean(test_scores,  axis=1)
+    test_scores_std   = np.std(test_scores,   axis=1)
     plt.grid()
 
     plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
@@ -96,37 +96,80 @@ def plot_learning_curve(estimator, title, X, y, ylim , cv, n_jobs):
     return plt
 
 
-#import the training data and separate the images and labels
+#import the data and separate the images and labels
 images_train, labels_train = read_data('train.csv')
-#import the testing data and separate the images and labels
-images_test, labels_test = read_data('test.csv')
+images_test,  labels_test  = read_data('test.csv')
 
 #normalise the image pixel values so that they range from 0 to 1
 images_train = images_train / 255
-images_test = images_test /255
+images_test  = images_test  / 255
 
+N = np.arange(10,110,10);
+C = np.arange(1,6,2);
+I = np.array([10,50,100]);
 
-for n in range(10, 110, 10): # It should be range(10, 110, 10). Just to speed up.
-    for c in range(1, 14, 3):
-        for it_num in [10, 50, 100]:
-            print('Fitting NN with {} neurons, {} learning rate, {} max iteration number'.format(n, c/10, it_num))
-            mlp = MLPClassifier(hidden_layer_sizes=(n, ), max_iter=it_num, solver='sgd', tol=1e-4, random_state=1, learning_rate_init=(c/10))
+train_scores = np.zeros([N.size, C.size, I.size]);
+test_scores  = np.zeros([N.size, C.size, I.size]);
+
+for i in range(N.size):              # number of neurons
+    for j in range(C.size):          # learning rate
+        for k in range(I.size):      # number of iterations
+            n = N[i];
+            c = C[j];
+            it_num = I[k];
+            mlp = MLPClassifier(hidden_layer_sizes=(n, ),
+                    max_iter=it_num, solver='sgd', tol=1e-4,
+                    random_state=1, learning_rate_init=(c/10))
+
             mlp.fit(images_train, labels_train)
-            # score: returns the mean accuracy on the given (test) data and labels
+
             train_score = mlp.score(images_train, labels_train)
             test_score = mlp.score(images_test, labels_test)
+            train_scores[i,j,k] = train_score;
+            test_scores[i,j,k]  = test_score;
+            print("Fitting NN with {} neurons, {} learning rate, {} max iteration number".format(n, c/10, it_num))
             print("Train set score (accuracy): %f" % train_score)
             print("Test set score (accuracy): %f" % test_score)
 
 ### for plotting
 
+plt.plot(I, train_scores[8,0,:])
+plt.plot(I, test_scores [8,0,:])
+plt.show();
+
+plt.plot(C/10, test_scores[0,:,0]);
+plt.plot(C/10, test_scores[2,:,0]);
+plt.plot(C/10, test_scores[4,:,0]);
+plt.plot(C/10, test_scores[8,:,0]);
+#plt.plot(C/10, train_scores[5,:,1]);
+#plt.axis([10,100,.9,1]);
+plt.grid();
+plt.legend(["10 neurons", "30 neurons", "50 neurons", "90 neurons"]);
+plt.title("Scores vs learning rate");
+plt.ylabel("Score");
+plt.xlabel("learning rate");
+plt.show();
+
+plt.plot(N, test_scores.max(2).max(1));
+plt.plot(N, train_scores.max(2).max(1));
+plt.axis([10,100,.9,1]);
+plt.grid();
+plt.legend(["Cross validation","Training"]);
+plt.title("Scores vs number of neurons");
+plt.ylabel("Best score");
+plt.xlabel("Number of neurons");
+plt.show();
+
+
 ylim=(0.7, 1.01)
 n_jobs=1
 cv = None
-digits = load_digits()
-X, y = digits.data, digits.target
-title = "Learning Curves (Naive Bayes)"
-estimator = GaussianNB()
+#digits = load_digits()
+#X, y = digits.data, digits.target
+X = images_train;
+y = labels_train;
+title = "Learning Curves (MLPClassifier)"
+estimator = MLPClassifier()
 plot_learning_curve(estimator, title, X, y, ylim, cv, n_jobs)
 plt.show()
 
