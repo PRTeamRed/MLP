@@ -2,7 +2,7 @@
 """
 Created on Wed Apr  4 16:20:17 2018
 
-@author: Shushan, Julia
+@author: Shushan, Julia, Cornelis
 
 source0: http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mnist_filters.html#sphx-glr-auto-examples-neural-networks-plot-mnist-filters-py
 source1: http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mnist_filters.html#sphx-glr-auto-examples-neural-networks-plot-mnist-filters-py
